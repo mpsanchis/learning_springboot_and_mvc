@@ -1,6 +1,7 @@
 package com.example.springbootandmvc.controllers;
 
 import com.example.springbootandmvc.services.LoginService;
+import com.example.springbootandmvc.utilities.LogInStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class LoginController {
+
+    private final LoginService loginService;
+
+    public LoginController(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @GetMapping("/login")
     public String loginGet() {
@@ -20,12 +27,13 @@ public class LoginController {
                             @RequestParam String password,
                             Model model) {
 
-        var loginService = new LoginService(username, password);
-        boolean loggedIn = loginService.login();
+        loginService.setUsername(username);
+        loginService.setPassword(password);
+        var loggStatus = loginService.login();
 
-        if (loggedIn) {
+        if (loggStatus == LogInStatus.LOGIN_SUCCESS) {
             model.addAttribute("message", "You are now logged in :)");
-        } else {
+        } else if (loggStatus == LogInStatus.LOGIN_FAILED) {
             model.addAttribute("message", "Login failed!");
         }
         return "login.html";

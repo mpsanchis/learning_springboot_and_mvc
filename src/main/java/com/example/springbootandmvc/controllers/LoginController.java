@@ -31,8 +31,11 @@ public class LoginController {
         loginService.setPassword(password);
         var loggStatus = loginService.login();
 
-        if (loggStatus == LogInStatus.LOGIN_SUCCESS) {
-            model.addAttribute("message", "You are now logged in :)");
+        if (loggStatus == LogInStatus.ALREADY_LOGGED_IN) {
+            return "redirect:/logged-home";
+        }
+        else if (loggStatus == LogInStatus.LOGIN_SUCCESS) {
+            return "redirect:/logged-home";
         } else if (loggStatus == LogInStatus.LOGIN_FAILED) {
             model.addAttribute("message", "Login failed!");
         }

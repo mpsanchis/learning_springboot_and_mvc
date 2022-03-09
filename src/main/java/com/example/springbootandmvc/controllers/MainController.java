@@ -55,7 +55,12 @@ public class MainController {
 
     @GetMapping("/logged-home")
     public String getLoggedHome(@RequestParam(required = false) String color,
+                                @RequestParam(required = false) String logout,
                                 Model page) {
+
+        if (logout != null) {
+            loggedUserManagementService.setUsername(null);
+        }
 
         if (loggedUserManagementService.getUsername() == null) {
             return "redirect:/login";
